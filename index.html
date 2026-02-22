@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Happy 18th Birthday, Sreelaksmi 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET & BASE ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%; height: 100%;
+            overflow: hidden;
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 30%, #e8b4f8 60%, #f3e5f5 100%);
+            touch-action: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* ===== FLOATING BACKGROUND HEARTS ===== */
+        .bg-heart {
+            position: fixed;
+            color: rgba(255, 100, 130, 0.15);
+            font-size: 24px;
+            animation: floatUp linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg) scale(1); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg) scale(0.5); opacity: 0; }
+        }
+
+        /* ===== SPARKLE PARTICLES ===== */
+        .sparkle {
+            position: fixed;
+            width: 4px; height: 4px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            animation: sparkleAnim 2s ease-in-out infinite;
+        }
+        @keyframes sparkleAnim {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* ===== SCREENS ===== */
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: opacity 0.8s ease;
+        }
+        .screen.hidden { opacity: 0; pointer-events: none; }
+
+        /* ===== START SCREEN ===== */
+        #startScreen {
+            background: linear-gradient(180deg, rgba(252, 228, 236, 0.95), rgba(243, 229, 245, 0.95));
+        }
+        .start-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            color: #c2185b;
+            text-align: center;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(194, 24, 91, 0.2);
+            line-height: 1.3;
+        }
+        .start-subtitle {
+            font-family: 'Quicksand', sans-serif;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            color: #8e24aa;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 300;
+            max-width: 300px;
+            line-height: 1.6;
+        }
+        .start-heart-big {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: heartPulse 1.2s ease-in-out infinite;
+        }
+        @keyframes heartPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 14px 40px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #ec407a, #ab47bc);
+            color: white;
+            box-shadow: 0 4px 20px rgba(236, 64, 122, 0.4), 0 0 40px rgba(236, 64, 122, 0.15);
+        }
+        .btn-primary:hover, .btn-primary:active {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 6px 30px rgba(236, 64, 122, 0.5), 0 0 60px rgba(236, 64, 122, 0.2);
+        }
+        .btn-glow {
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 4px 20px rgba(236, 64, 122, 0.4), 0 0 40px rgba(236, 64, 122, 0.15); }
+            50% { box-shadow: 0 4px 30px rgba(236, 64, 122, 0.6), 0 0 80px rgba(236, 64, 122, 0.3); }
+        }
+        .btn-music {
+            position: fixed;
+            top: 12px; right: 12px;
+            z-index: 200;
+            width: 44px; height: 44px;
+            padding: 0;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.85);
+            border: 2px solid #f48fb1;
+            color: #c2185b;
+            backdrop-filter: blur(10px);
+        }
+        .btn-music:hover { background: rgba(255,255,255,1); }
+
+        /* ===== GAME AREA ===== */
+        #gameScreen {
+            z-index: 50;
+            background: transparent;
+        }
+        #gameCanvas {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+        }
+
+        /* ===== HUD ===== */
+        .hud {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 60;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(244, 143, 177, 0.3);
+        }
+        .hud-item {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #880e4f;
+        }
+        .hud-score span, .hud-timer span {
+            color: #c2185b;
+            font-size: 1.15rem;
+        }
+        .hud-timer { color: #7b1fa2; }
+
+        /* ===== CATCH WORD POPUP ===== */
+        .catch-word {
+            position: fixed;
+            z-index: 70;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.3rem;
+            color: #c2185b;
+            pointer-events: none;
+            animation: catchWordAnim 1.2s ease-out forwards;
+            text-shadow: 0 1px 8px rgba(194, 24, 91, 0.3);
+            white-space: nowrap;
+        }
+        @keyframes catchWordAnim {
+            0% { opacity: 1; transform: translateY(0) scale(0.8); }
+            30% { transform: translateY(-20px) scale(1.1); }
+            100% { opacity: 0; transform: translateY(-60px) scale(0.9); }
+        }
+
+        /* ===== END SCREEN ===== */
+        #endScreen {
+            background: linear-gradient(180deg, rgba(252, 228, 236, 0.97), rgba(243, 229, 245, 0.97));
+            padding: 30px;
+        }
+        .end-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(2rem, 7vw, 3rem);
+            color: #c2185b;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .end-score {
+            font-size: clamp(0.95rem, 3vw, 1.15rem);
+            color: #6a1b9a;
+            text-align: center;
+            max-width: 340px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+        .end-score em {
+            font-style: normal;
+            color: #c2185b;
+            font-weight: 600;
+            font-size: 1.4em;
+        }
+
+        /* ===== KISS POPUP ===== */
+        #kissOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(136, 14, 79, 0.6);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+        #kissOverlay.show { opacity: 1; pointer-events: all; }
+        .kiss-card {
+            background: white;
+            border-radius: 24px;
+            padding: 36px 28px;
+            max-width: 360px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(136, 14, 79, 0.3);
+            transform: scale(0.8);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        #kissOverlay.show .kiss-card { transform: scale(1); }
+        .kiss-emoji { font-size: 60px; margin-bottom: 16px; }
+        .kiss-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            color: #c2185b;
+            margin-bottom: 12px;
+        }
+        .kiss-msg {
+            font-size: 1rem;
+            color: #6a1b9a;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .kiss-footer {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.4rem;
+            color: #ec407a;
+        }
+
+        /* ===== HEART BURST ===== */
+        .burst-heart {
+            position: fixed;
+            font-size: 24px;
+            pointer-events: none;
+            z-index: 350;
+            animation: burstAnim 1.5s ease-out forwards;
+        }
+        @keyframes burstAnim {
+            0% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: translate(var(--bx), var(--by)) scale(0) rotate(720deg); }
+        }
+
+        /* ===== BIRTHDAY MESSAGE ===== */
+        #birthdayMsg {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            z-index: 310;
+            text-align: center;
+            padding: 24px 20px 30px;
+            background: linear-gradient(0deg, rgba(255,255,255,0.95), rgba(255,255,255,0));
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s ease 0.5s;
+            pointer-events: none;
+        }
+        #birthdayMsg.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .bday-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1.3rem, 5vw, 1.8rem);
+            color: #880e4f;
+            line-height: 1.6;
+        }
+
+        /* ===== RESPONSIVE HELPERS ===== */
+        @media (max-height: 600px) {
+            .start-heart-big { font-size: 50px; margin-bottom: 10px; }
+            .start-title { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== MUSIC BUTTON ===== -->
+<button class="btn btn-music" id="musicBtn" title="Toggle Music">🎵</button>
+
+<!-- ===== BACKGROUND FLOATING HEARTS (generated by JS) ===== -->
+<div id="bgHearts"></div>
+<div id="sparkles"></div>
+
+<!-- ===== START SCREEN ===== -->
+<div class="screen" id="startScreen">
+    <div class="start-heart-big">💖</div>
+    <h1 class="start-title">Catch My Love,<br>My Shuttumani ❤️</h1>
+    <p class="start-subtitle">
+        Happy 18th Birthday, Sreelaksmi! 🎂✨<br>
+        Catch all the falling hearts<br>and discover sweet surprises 💕
+    </p>
+    <button class="btn btn-primary btn-glow" id="playBtn">
+        Play My Love 💖
+    </button>
+</div>
+
+<!-- ===== GAME SCREEN ===== -->
+<div class="screen hidden" id="gameScreen">
+    <div class="hud" id="hud">
+        <div class="hud-item hud-score">💖 <span id="scoreDisplay">0</span></div>
+        <div class="hud-item hud-timer">⏰ <span id="timerDisplay">30</span>s</div>
+    </div>
+    <canvas id="gameCanvas"></canvas>
+</div>
+
+<!-- ===== END SCREEN ===== -->
+<div class="screen hidden" id="endScreen">
+    <div class="start-heart-big">💘</div>
+    <h2 class="end-title">Game Over, My Love ❤️</h2>
+    <p class="end-score" id="endMessage"></p>
+    <button class="btn btn-primary btn-glow" id="kissBtn">
+        Tap for Your Birthday Kiss 💋
+    </button>
+</div>
+
+<!-- ===== KISS OVERLAY ===== -->
+<div id="kissOverlay">
+    <div class="kiss-card">
+        <div class="kiss-emoji">💋✨💖</div>
+        <h3 class="kiss-title">A Kiss for My Shuttumani</h3>
+        <p class="kiss-msg">
+            Sreelaksmi, you are the most beautiful thing<br>
+            that ever happened to my life. 💕<br><br>
+            On your 18th birthday, I just want you to know —<br>
+            <strong>every heartbeat of mine says your name.</strong><br><br>
+            You're not just my love,<br>
+            you're my whole universe. 🌙✨
+        </p>
+        <div class="kiss-footer">Forever Yours 💖</div>
+    </div>
+</div>
+
+<!-- ===== BIRTHDAY FADE-IN MESSAGE ===== -->
+<div id="birthdayMsg">
+    <p class="bday-text">
+        🎂 Happy 18th Birthday, My Shuttumani! 🎂<br>
+        Here's to a lifetime of us. 💖<br>
+        I love you more than words can ever say. ✨
+    </p>
+</div>
+
+<script>
+/* =============================================================
+   💖 CATCH MY LOVE — A Birthday Game for Sreelaksmi
+   ============================================================= */
+
+// ===== DOM REFERENCES =====
+const startScreen = document.getElementById('startScreen');
+const gameScreen  = document.getElementById('gameScreen');
+const endScreen   = document.getElementById('endScreen');
+const canvas      = document.getElementById('gameCanvas');
+const ctx         = canvas.getContext('2d');
+const scoreDisplay = document.getElementById('scoreDisplay');
+const timerDisplay = document.getElementById('timerDisplay');
+const endMessage   = document.getElementById('endMessage');
+const kissOverlay  = document.getElementById('kissOverlay');
+const birthdayMsg  = document.getElementById('birthdayMsg');
+const musicBtn     = document.getElementById('musicBtn');
+const playBtn      = document.getElementById('playBtn');
+const kissBtn      = document.getElementById('kissBtn');
+
+// ===== GAME VARIABLES =====
+let score = 0;
+let timeLeft = 30;
+let gameRunning = false;
+let gameTimer = null;
+let animFrame = null;
+let hearts = [];
+let catcherX = 0;
+let catcherWidth = 70;
+let catcherHeight = 50;
+let touchStartX = 0;
+
+// ===== CUTE MESSAGES =====
+const cuteWords = [
+    "My sweetheart 💕",
+    "My shuttumani ❤️",
+    "My forever girl ✨",
+    "My princess 💖",
+    "My world 🌍",
+    "My everything 💗",
+    "My cutie pie 🧁",
+    "My soulmate 🌹",
+    "My sunshine ☀️",
+    "My angel 👼",
+    "My love bug 🐞",
+    "My heartbeat 💓",
+    "My treasure 💎",
+    "My baby girl 🎀",
+    "My moonlight 🌙"
+];
+
+// ===== AUDIO — Soft romantic melody using Web Audio API =====
+let audioCtx = null;
+let musicPlaying = false;
+let musicGain = null;
+let musicInterval = null;
+
+function initAudio() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    musicGain = audioCtx.createGain();
+    musicGain.gain.value = 0.12;
+    musicGain.connect(audioCtx.destination);
+}
+
+function playNote(freq, startTime, duration, type = 'sine') {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const env = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    env.gain.setValueAtTime(0, startTime);
+    env.gain.linearRampToValueAtTime(0.3, startTime + 0.05);
+    env.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+    osc.connect(env);
+    env.connect(musicGain);
+    osc.start(startTime);
+    osc.stop(startTime + duration);
+}
+
+function playMelody() {
+    if (!audioCtx) initAudio();
+    // A sweet, romantic melody loop
+    const notes = [
+        523.25, 587.33, 659.25, 783.99, 659.25, 587.33,
+        523.25, 493.88, 440.00, 493.88, 523.25, 587.33,
+        659.25, 783.99, 880.00, 783.99, 659.25, 587.33,
+        523.25, 493.88, 440.00, 392.00, 440.00, 523.25
+    ];
+    const now = audioCtx.currentTime;
+    const noteDur = 0.45;
+    notes.forEach((freq, i) => {
+        playNote(freq, now + i * noteDur, noteDur * 0.9, 'sine');
+        // Soft harmony
+        playNote(freq * 0.5, now + i * noteDur, noteDur * 0.9, 'triangle');
+    });
+    return notes.length * noteDur * 1000;
+}
+
+function startMusic() {
+    if (musicPlaying) return;
+    initAudio();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    musicPlaying = true;
+    musicBtn.textContent = '🔊';
+    const loopDur = playMelody();
+    musicInterval = setInterval(() => {
+        if (musicPlaying) playMelody();
+    }, loopDur);
+}
+
+function stopMusic() {
+    musicPlaying = false;
+    musicBtn.textContent = '🎵';
+    if (musicInterval) clearInterval(musicInterval);
+}
+
+function toggleMusic() {
+    if (musicPlaying) stopMusic();
+    else startMusic();
+}
+
+musicBtn.addEventListener('click', toggleMusic);
+
+// ===== SOUND EFFECTS =====
+function playCatchSound() {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const env = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, now);
+    osc.frequency.exponentialRampToValueAtTime(1320, now + 0.1);
+    env.gain.setValueAtTime(0.2, now);
+    env.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+    osc.connect(env);
+    env.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.25);
+}
+
+// ===== BACKGROUND FLOATING HEARTS =====
+function createBgHearts() {
+    const container = document.getElementById('bgHearts');
+    const heartChars = ['💕', '💖', '💗', '❤️', '💓', '🩷', '🤍'];
+    for (let i = 0; i < 15; i++) {
+        const el = document.createElement('div');
+        el.className = 'bg-heart';
+        el.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
+        el.style.left = Math.random() * 100 + '%';
+        el.style.fontSize = (16 + Math.random() * 20) + 'px';
+        el.style.animationDuration = (8 + Math.random() * 12) + 's';
+        el.style.animationDelay = (Math.random() * 10) + 's';
+        container.appendChild(el);
+    }
+}
+
+// ===== SPARKLE PARTICLES =====
+function createSparkles() {
+    const container = document.getElementById('sparkles');
+    for (let i = 0; i < 20; i++) {
+        const el = document.createElement('div');
+        el.className = 'sparkle';
+        el.style.left = Math.random() * 100 + '%';
+        el.style.top = Math.random() * 100 + '%';
+        el.style.width = el.style.height = (2 + Math.random() * 4) + 'px';
+        el.style.animationDuration = (1.5 + Math.random() * 3) + 's';
+        el.style.animationDelay = (Math.random() * 3) + 's';
+        container.appendChild(el);
+    }
+}
+
+// ===== CANVAS SETUP =====
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    catcherX = canvas.width / 2 - catcherWidth / 2;
+}
+window.addEventListener('resize', resizeCanvas);
+
+// ===== HEART OBJECTS =====
+function spawnHeart() {
+    const size = 22 + Math.random() * 16;
+    hearts.push({
+        x: Math.random() * (canvas.width - 40) + 20,
+        y: -30,
+        size: size,
+        speed: 2 + Math.random() * 2.5,
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: 0.02 + Math.random() * 0.03,
+        wobbleAmp: 0.5 + Math.random() * 1,
+        rotation: Math.random() * 0.4 - 0.2
+    });
+}
+
+// ===== DRAW HEART SHAPE =====
+function drawHeart(x, y, size, rotation) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rotation);
+    ctx.beginPath();
+    const s = size / 30;
+    ctx.moveTo(0, -5 * s);
+    ctx.bezierCurveTo(-15 * s, -25 * s, -35 * s, -5 * s, 0, 20 * s);
+    ctx.bezierCurveTo(35 * s, -5 * s, 15 * s, -25 * s, 0, -5 * s);
+    ctx.closePath();
+
+    // Gradient fill
+    const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, size);
+    grad.addColorStop(0, '#ff6b8a');
+    grad.addColorStop(0.6, '#e91e63');
+    grad.addColorStop(1, '#c2185b');
+    ctx.fillStyle = grad;
+    ctx.shadowColor = 'rgba(233, 30, 99, 0.4)';
+    ctx.shadowBlur = 12;
+    ctx.fill();
+
+    // Shine highlight
+    ctx.beginPath();
+    ctx.ellipse(-6 * s, -10 * s, 4 * s, 3 * s, -0.3, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.shadowBlur = 0;
+    ctx.fill();
+    ctx.restore();
+}
+
+// ===== DRAW CATCHER (Glowing Heart Basket) =====
+function drawCatcher() {
+    const cx = catcherX + catcherWidth / 2;
+    const cy = canvas.height - 55;
+
+    // Glow
+    ctx.save();
+    ctx.shadowColor = 'rgba(233, 30, 99, 0.5)';
+    ctx.shadowBlur = 25;
+
+    // Basket body
+    ctx.beginPath();
+    ctx.moveTo(catcherX, cy - 8);
+    ctx.quadraticCurveTo(catcherX, cy + 28, cx, cy + 35);
+    ctx.quadraticCurveTo(catcherX + catcherWidth, cy + 28, catcherX + catcherWidth, cy - 8);
+    ctx.lineTo(catcherX, cy - 8);
+    ctx.closePath();
+
+    const grad = ctx.createLinearGradient(catcherX, cy - 10, catcherX, cy + 35);
+    grad.addColorStop(0, '#f8bbd0');
+    grad.addColorStop(0.5, '#f48fb1');
+    grad.addColorStop(1, '#ec407a');
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Basket rim
+    ctx.beginPath();
+    ctx.roundRect(catcherX - 6, cy - 14, catcherWidth + 12, 12, 6);
+    ctx.fillStyle = '#ec407a';
+    ctx.fill();
+    ctx.strokeStyle = '#c2185b';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Small heart on basket
+    ctx.shadowBlur = 0;
+    ctx.font = '18px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('💖', cx, cy + 16);
+
+    ctx.restore();
+}
+
+// ===== SHOW CATCH WORD =====
+function showCatchWord(x, y) {
+    const word = cuteWords[Math.floor(Math.random() * cuteWords.length)];
+    const el = document.createElement('div');
+    el.className = 'catch-word';
+    el.textContent = word;
+    el.style.left = Math.max(10, Math.min(x - 60, window.innerWidth - 180)) + 'px';
+    el.style.top = y + 'px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1200);
+}
+
+// ===== GAME LOOP =====
+let spawnTimer = 0;
+let difficulty = 1;
+
+function gameLoop() {
+    if (!gameRunning) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Spawn hearts
+    spawnTimer++;
+    const spawnRate = Math.max(15, 35 - difficulty * 2);
+    if (spawnTimer >= spawnRate) {
+        spawnHeart();
+        spawnTimer = 0;
+    }
+
+    // Update & draw hearts
+    const catcherTop = canvas.height - 65;
+    const catcherLeft = catcherX - 6;
+    const catcherRight = catcherX + catcherWidth + 6;
+    const catcherBottom = canvas.height - 20;
+
+    for (let i = hearts.length - 1; i >= 0; i--) {
+        const h = hearts[i];
+        h.wobble += h.wobbleSpeed;
+        h.x += Math.sin(h.wobble) * h.wobbleAmp;
+        h.y += h.speed;
+
+        drawHeart(h.x, h.y, h.size, h.rotation);
+
+        // Check catch
+        if (
+            h.y + h.size / 2 >= catcherTop &&
+            h.y - h.size / 2 <= catcherBottom &&
+            h.x >= catcherLeft &&
+            h.x <= catcherRight
+        ) {
+            score++;
+            scoreDisplay.textContent = score;
+            showCatchWord(h.x, catcherTop - 20);
+            playCatchSound();
+            hearts.splice(i, 1);
+            continue;
+        }
+
+        // Remove if off screen
+        if (h.y > canvas.height + 40) {
+            hearts.splice(i, 1);
+        }
+    }
+
+    // Draw catcher
+    drawCatcher();
+
+    animFrame = requestAnimationFrame(gameLoop);
+}
+
+// ===== TIMER =====
+function startTimer() {
+    timeLeft = 30;
+    timerDisplay.textContent = timeLeft;
+    gameTimer = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
+        // Increase difficulty over time
+        difficulty = Math.floor((30 - timeLeft) / 5) + 1;
+        if (timeLeft <= 0) {
+            endGame();
+        }
+    }, 1000);
+}
+
+// ===== START GAME =====
+function startGame() {
+    initAudio();
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+
+    startScreen.classList.add('hidden');
+    endScreen.classList.add('hidden');
+    gameScreen.classList.remove('hidden');
+
+    resizeCanvas();
+    score = 0;
+    timeLeft = 30;
+    hearts = [];
+    spawnTimer = 0;
+    difficulty = 1;
+    scoreDisplay.textContent = '0';
+    timerDisplay.textContent = '30';
+    catcherX = canvas.width / 2 - catcherWidth / 2;
+    gameRunning = true;
+
+    startTimer();
+    gameLoop();
+}
+
+// ===== END GAME =====
+function endGame() {
+    gameRunning = false;
+    clearInterval(gameTimer);
+    cancelAnimationFrame(animFrame);
+
+    gameScreen.classList.add('hidden');
+    endScreen.classList.remove('hidden');
+
+    endMessage.innerHTML = `You caught <em>${score}</em> pieces of my heart…<br>but you already own <em>all</em> of it. 💖`;
+}
+
+// ===== KISS BUTTON =====
+function showKiss() {
+    kissOverlay.classList.add('show');
+    triggerHeartBurst();
+    setTimeout(() => {
+        birthdayMsg.classList.add('show');
+    }, 800);
+}
+
+// ===== HEART BURST ANIMATION =====
+function triggerHeartBurst() {
+    const heartEmojis = ['💖', '💕', '💗', '❤️', '💋', '✨', '🩷', '💓', '🌹', '💘'];
+    for (let i = 0; i < 30; i++) {
+        const el = document.createElement('div');
+        el.className = 'burst-heart';
+        el.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+        el.style.left = '50%';
+        el.style.top = '50%';
+        el.style.fontSize = (16 + Math.random() * 24) + 'px';
+        const angle = (Math.PI * 2 * i) / 30;
+        const dist = 80 + Math.random() * 200;
+        el.style.setProperty('--bx', Math.cos(angle) * dist + 'px');
+        el.style.setProperty('--by', Math.sin(angle) * dist - 50 + 'px');
+        el.style.animationDuration = (1 + Math.random() * 1) + 's';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 2500);
+    }
+}
+
+// ===== CONTROLS — KEYBOARD =====
+const keysDown = {};
+document.addEventListener('keydown', (e) => {
+    keysDown[e.key] = true;
+});
+document.addEventListener('keyup', (e) => {
+    keysDown[e.key] = false;
+});
+
+// Smooth keyboard movement via polling in game loop
+const origGameLoop = gameLoop;
+function gameLoopWithInput() {
+    if (!gameRunning) return;
+    const speed = 8;
+    if (keysDown['ArrowLeft'] || keysDown['a']) {
+        catcherX = Math.max(-6, catcherX - speed);
+    }
+    if (keysDown['ArrowRight'] || keysDown['d']) {
+        catcherX = Math.min(canvas.width - catcherWidth + 6, catcherX + speed);
+    }
+    // Clear and run game logic
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Spawn
+    spawnTimer++;
+    const spawnRate = Math.max(15, 35 - difficulty * 2);
+    if (spawnTimer >= spawnRate) {
+        spawnHeart();
+        spawnTimer = 0;
+    }
+
+    // Hearts
+    const catcherTop = canvas.height - 65;
+    const catcherLeft = catcherX - 6;
+    const catcherRight = catcherX + catcherWidth + 6;
+    const catcherBottom = canvas.height - 20;
+
+    for (let i = hearts.length - 1; i >= 0; i--) {
+        const h = hearts[i];
+        h.wobble += h.wobbleSpeed;
+        h.x += Math.sin(h.wobble) * h.wobbleAmp;
+        h.y += h.speed;
+        drawHeart(h.x, h.y, h.size, h.rotation);
+        if (
+            h.y + h.size / 2 >= catcherTop &&
+            h.y - h.size / 2 <= catcherBottom &&
+            h.x >= catcherLeft &&
+            h.x <= catcherRight
+        ) {
+            score++;
+            scoreDisplay.textContent = score;
+            showCatchWord(h.x, catcherTop - 20);
+            playCatchSound();
+            hearts.splice(i, 1);
+            continue;
+        }
+        if (h.y > canvas.height + 40) {
+            hearts.splice(i, 1);
+        }
+    }
+
+    drawCatcher();
+    animFrame = requestAnimationFrame(gameLoopWithInput);
+}
+
+// Override gameLoop
+function startGameFull() {
+    initAudio();
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+
+    startScreen.classList.add('hidden');
+    endScreen.classList.add('hidden');
+    gameScreen.classList.remove('hidden');
+
+    resizeCanvas();
+    score = 0;
+    timeLeft = 30;
+    hearts = [];
+    spawnTimer = 0;
+    difficulty = 1;
+    scoreDisplay.textContent = '0';
+    timerDisplay.textContent = '30';
+    catcherX = canvas.width / 2 - catcherWidth / 2;
+    gameRunning = true;
+
+    startTimer();
+    gameLoopWithInput();
+}
+
+// ===== CONTROLS — TOUCH (Mobile) =====
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchStartX = touch.clientX;
+}, { passive: false });
+
+canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    // Direct position: move catcher to finger
+    catcherX = touch.clientX - catcherWidth / 2;
+    catcherX = Math.max(-6, Math.min(canvas.width - catcherWidth + 6, catcherX));
+}, { passive: false });
+
+// ===== CONTROLS — MOUSE (Desktop fallback) =====
+canvas.addEventListener('mousemove', (e) => {
+    if (!gameRunning) return;
+    catcherX = e.clientX - catcherWidth / 2;
+    catcherX = Math.max(-6, Math.min(canvas.width - catcherWidth + 6, catcherX));
+});
+
+// ===== EVENT LISTENERS =====
+playBtn.addEventListener('click', startGameFull);
+kissBtn.addEventListener('click', showKiss);
+
+// Close kiss overlay on click outside card
+kissOverlay.addEventListener('click', (e) => {
+    if (e.target === kissOverlay) {
+        kissOverlay.classList.remove('show');
+        birthdayMsg.classList.remove('show');
+    }
+});
+
+// ===== INITIALIZE DECORATIONS =====
+createBgHearts();
+createSparkles();
+
+// ===== Canvas roundRect polyfill =====
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+        if (typeof r === 'number') r = [r, r, r, r];
+        this.beginPath();
+        this.moveTo(x + r[0], y);
+        this.lineTo(x + w - r[1], y);
+        this.quadraticCurveTo(x + w, y, x + w, y + r[1]);
+        this.lineTo(x + w, y + h - r[2]);
+        this.quadraticCurveTo(x + w, y + h, x + w - r[2], y + h);
+        this.lineTo(x + r[3], y + h);
+        this.quadraticCurveTo(x, y + h, x, y + h - r[3]);
+        this.lineTo(x, y + r[0]);
+        this.quadraticCurveTo(x, y, x + r[0], y);
+        this.closePath();
+    };
+}
+
+</script>
+</body>
+</html>
